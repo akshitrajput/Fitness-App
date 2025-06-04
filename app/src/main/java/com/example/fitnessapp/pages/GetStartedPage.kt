@@ -1,7 +1,6 @@
 package com.example.fitnessapp.pages
 
 import android.net.Uri
-import android.util.Log
 import android.view.ViewGroup
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -17,6 +16,8 @@ import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -31,14 +32,15 @@ import androidx.media3.common.MediaItem
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.ui.PlayerView
 import androidx.navigation.NavController
+import com.example.fitnessapp.AuthState
 import com.example.fitnessapp.AuthViewModel
-import com.example.fitnessapp.poppinsFontFamily
+import com.example.fitnessapp.ui.theme.AppFonts
 
 
 @Composable
 fun GetStartedPage(modifier: Modifier = Modifier, navController: NavController, authViewModel: AuthViewModel) {
     val context = LocalContext.current
-
+    val authState = authViewModel.authState.observeAsState()
     val exoPlayer = remember {
         ExoPlayer.Builder(context).build().apply {
             val videoUri = Uri.parse("asset:///video4.mp4")
@@ -49,7 +51,16 @@ fun GetStartedPage(modifier: Modifier = Modifier, navController: NavController, 
             prepare()
         }
     }
-
+    LaunchedEffect(authState.value) {
+        when (authState.value) {
+            is AuthState.Authenticated -> {
+                navController.navigate("home") {
+                    popUpTo("getStarted") { inclusive = true }
+                }
+            }
+            else -> {}
+        }
+    }
     DisposableEffect(Unit) {
         onDispose {
             exoPlayer.release()
@@ -66,12 +77,10 @@ fun GetStartedPage(modifier: Modifier = Modifier, navController: NavController, 
         Text(
             text = "Fitness App",
             fontSize = 50.sp,
-            fontFamily = poppinsFontFamily,
+            fontFamily = AppFonts.Poppins,
             fontWeight = FontWeight.Bold,
             modifier = Modifier.padding(top = 24.dp)
         )
-
-        // ExoPlayer Composable
         AndroidView(
             factory = {
                 PlayerView(it).apply {
@@ -88,11 +97,13 @@ fun GetStartedPage(modifier: Modifier = Modifier, navController: NavController, 
                 .height(300.dp)
         )
         Button(
-            onClick = { navController.navigate("signup") },
+            onClick = { navController.navigate("login") {
+                popUpTo("getStarted") {inclusive = true}
+            } },
             modifier = Modifier.fillMaxWidth().clip(RoundedCornerShape(100.dp)),
             colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFF6C7894))
         ) {
-            Text(text = "Get Started ➝", fontSize = 28.sp, fontFamily = poppinsFontFamily, color = Color.White)
+            Text(text = "Get Started ➝", fontSize = 28.sp, fontFamily = AppFonts.Poppins, color = Color.White)
         }
     }
 }

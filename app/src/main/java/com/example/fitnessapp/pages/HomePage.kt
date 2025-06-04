@@ -1,24 +1,109 @@
 package com.example.fitnessapp.pages
 
+import android.content.Context
+import android.widget.Toast
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Home
+import androidx.compose.material3.Icon
+import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.unit.sp
+import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavController
+import com.example.fitnessapp.AuthState
 import com.example.fitnessapp.AuthViewModel
+import com.example.fitnessapp.NavBar_Items
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
+
+
+val webClientId = "1034815753409-1ohon4ppt1je9sc7rb9epc7hrkak1qq6.apps.googleusercontent.com"
+
 
 @Composable
 fun HomePage(modifier: Modifier = Modifier, navController: NavController, authViewModel: AuthViewModel) {
-    Column (
-        modifier = Modifier.fillMaxSize(),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
-    ) {
-        Text(text = "Home Page", fontSize = 24.sp, color = Color.Black)
+    val authState = authViewModel.authState.observeAsState()
+    LaunchedEffect(authState.value) {
+        when(authState.value) {
+            is AuthState.Unauthenticated -> {
+                navController.navigate("login") {
+                    popUpTo("home") { inclusive = true }
+                    launchSingleTop = true
+                }
+            }
+            else -> Unit
+        }
+    }
+    val navItemsList = listOf(
+        NavBar_Items("Home", Icons.Default.Home),
+        NavBar_Items("WorkOut", Icons.Default.Home),
+        NavBar_Items("Meal", Icons.Default.Home),
+    )
+
+    Scaffold (
+        modifier = Modifier.fillMaxSize()
+    , bottomBar = {
+        NavigationBar {
+            navItemsList.forEachIndexed { index, navItem ->
+                NavigationBarItem(selected = true, onClick = {}, icon = { Icon(imageVector = navItem.icon, contentDescription = "Icon") },
+                    label = { Text(navItem.label) })
+            }
+        }
+        }){ innerPadding ->
+        ContentScreen(modifier = Modifier.padding(innerPadding),authViewModel)
     }
 }
+
+@Composable
+fun ContentScreen(modifier: Modifier = Modifier,authViewModel: AuthViewModel) {
+    val context = LocalContext.current
+    val authState = authViewModel.authState.observeAsState()
+    Column (
+        modifier = Modifier.fillMaxSize().background(Color.White),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.SpaceEvenly
+    ) {
+        TextButton(
+            onClick = {
+                SignOut(context, webClientId) {
+                    Toast.makeText(context,"Logout Successful",Toast.LENGTH_SHORT).show()
+                }
+                authViewModel.signout()
+
+            }
+        ) {
+            Text("SignOut")
+        }
+    }
+}
+
+fun SignOut(context: Context, webClientId: String, onComplete: () -> Unit) {
+    Firebase.auth.signOut()
+    val googleSignInOptions = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+        .requestIdToken(webClientId)
+        .requestEmail()
+        .build()
+    val googleSignInClient = GoogleSignIn.getClient(context, googleSignInOptions)
+    googleSignInClient.signOut().addOnCompleteListener{
+        onComplete()
+    }
+}
+
+
+
+

@@ -6,19 +6,20 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import android.util.Log
+import android.widget.Toast
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
@@ -26,26 +27,98 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.TextButton
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.viewinterop.AndroidView
+import com.example.fitnessapp.AuthState
 import com.example.fitnessapp.AuthViewModel
 import com.example.fitnessapp.R
-import com.example.fitnessapp.poppinsFontFamily
-
+import com.example.fitnessapp.ui.theme.AppFonts
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.android.gms.common.SignInButton
+import com.google.firebase.auth.GoogleAuthProvider
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 
 @Composable
 fun SignupPage(modifier: Modifier = Modifier,navController: NavController,authViewModel: AuthViewModel) {
+    val authState = authViewModel.authState.observeAsState()
+    val context = LocalContext.current
+    val googleSignInOptions = remember {
+        GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+            .requestIdToken(webClientId)
+            .requestEmail()
+            .build()
+    }
+    val googleSignInClient = remember {
+        GoogleSignIn.getClient(context,googleSignInOptions)
+    }
+    val launcher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.StartActivityForResult()
+    ) { result->
+        val task = GoogleSignIn.getSignedInAccountFromIntent(result.data)
+        try{
+            val account = task.result
+            val credential = GoogleAuthProvider.getCredential(account.idToken,null)
+            Firebase.auth.signInWithCredential(credential)
+                .addOnCompleteListener { task->
+                    if (task.isSuccessful) {
+                        Toast.makeText(context,"Google Sign-in Successful",Toast.LENGTH_SHORT).show()
+                        navController.navigate("home") {
+                            popUpTo("login") {inclusive = true}
+                        }
+                    } else{
+                        Toast.makeText(context,"Google Sign-in Failed",Toast.LENGTH_SHORT).show()
+                    }
+                }
+        } catch (e: Exception) {
+            Toast.makeText(context,"Google Sign-in Failed: ${e.message}",Toast.LENGTH_SHORT).show()
+        }
+    }
+    LaunchedEffect(authState.value) {
+        when(authState.value) {
+            is AuthState.Authenticated -> navController.navigate("home")
+            is AuthState.Error -> Toast.makeText(context,
+                (authState.value as AuthState.Error).message, Toast.LENGTH_SHORT).show()
+            else -> Unit
+        }
+    }
     var email by remember {
         mutableStateOf("")
     }
-
     var password by remember {
         mutableStateOf("")
+    }
+    LaunchedEffect(authState.value) {
+        when(authState.value) {
+            is AuthState.Authenticated -> navController.navigate("home")
+            is AuthState.Error -> Toast.makeText(context,
+                (authState.value as AuthState.Error).message, Toast.LENGTH_SHORT).show()
+            else -> Unit
+        }
+    }
+    if (authState.value is AuthState.Loading) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Color.White),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
+            CircularProgressIndicator()
+            Spacer(modifier = Modifier.height(16.dp))
+            Text("Signing in...", fontFamily = AppFonts.Poppins)
+        }
+        return
     }
 
     Column(
@@ -63,9 +136,9 @@ fun SignupPage(modifier: Modifier = Modifier,navController: NavController,authVi
         )
         Text(
             text = "Sign up with our App",
-            fontSize = 36.sp,
+            fontSize = 32.sp,
             fontWeight = FontWeight.Bold,
-            fontFamily = poppinsFontFamily
+            fontFamily = AppFonts.Poppins
         )
         Spacer(modifier = Modifier.height(20.dp))
         OutlinedTextField(
@@ -74,7 +147,7 @@ fun SignupPage(modifier: Modifier = Modifier,navController: NavController,authVi
                 email = it
             },
             label = {
-                Text("Enter email Address", fontFamily = poppinsFontFamily)
+                Text("Enter email Address", fontFamily = AppFonts.Poppins)
             }
         )
         Spacer(modifier = Modifier.height(20.dp))
@@ -84,13 +157,13 @@ fun SignupPage(modifier: Modifier = Modifier,navController: NavController,authVi
                 password = it
             },
             label = {
-                Text("Create Password", fontFamily = poppinsFontFamily)
+                Text("Create Password", fontFamily = AppFonts.Poppins)
             }, visualTransformation = PasswordVisualTransformation()
         )
         Spacer(modifier = Modifier.height(40.dp))
         Button(
             onClick = {
-                Log.d("MainActivity.kt", "Login Successful\nEmail-id : $email\nPassword : $password")
+                authViewModel.signup(email,password)
             },
             modifier = Modifier.fillMaxWidth(0.4f),
             colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF6C7894))
@@ -98,7 +171,7 @@ fun SignupPage(modifier: Modifier = Modifier,navController: NavController,authVi
             Text(
                 text = "Sign In",
                 fontSize = 20.sp,
-                fontFamily = poppinsFontFamily,
+                fontFamily = AppFonts.Poppins,
                 color = Color.White
             )
         }
@@ -106,43 +179,29 @@ fun SignupPage(modifier: Modifier = Modifier,navController: NavController,authVi
 
         TextButton(
             onClick = {
-                navController.navigate("login")
+                navController.navigate("login") {
+                    popUpTo("signup") { inclusive = true}
+                }
             }
         ) {
-            Text(text = "Already have an account, Login", fontFamily = poppinsFontFamily)
+            Text(text = "Already have an account, Login", fontFamily = AppFonts.Poppins)
         }
-        Spacer(modifier = Modifier.height(80.dp))
-        Text(text = "Or sign in with", fontSize = 16.sp, fontFamily = poppinsFontFamily)
-        Spacer(modifier = Modifier.height(20.dp))
-        Row(
-            horizontalArrangement = Arrangement.SpaceAround,
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.fillMaxWidth(.8f).padding(horizontal = 25.dp)
-        ) {
-            Image(
-                modifier = Modifier.size(40.dp).clickable { },
-                painter = painterResource(R.drawable.google_logo),
-                contentDescription = "With Google",
-                contentScale = ContentScale.Fit
-            )
-            Image(
-                modifier = Modifier.size(40.dp).clickable { },
-                painter = painterResource(R.drawable.facebook_logo),
-                contentDescription = "With Facebook",
-                contentScale = ContentScale.Fit
-            )
-            Image(
-                modifier = Modifier.size(40.dp).clickable { },
-                painter = painterResource(R.drawable.chrome_logo),
-                contentDescription = "With Chrome",
-                contentScale = ContentScale.Fit
-            )
-            Image(
-                modifier = Modifier.size(50.dp).clickable { },
-                painter = painterResource(R.drawable.twitter_logo),
-                contentDescription = "With Twitter",
-                contentScale = ContentScale.Fit)
-        }
+        Spacer(modifier = Modifier.height(40.dp))
+        Text(text = "Or", fontSize = 16.sp, fontFamily = AppFonts.Poppins)
+        Spacer(modifier = Modifier.height(12.dp))
+
+
+        AndroidView(modifier = Modifier.fillMaxWidth(0.6f).height(48.dp),
+            factory = { context->
+                SignInButton(context).apply {
+                    setSize(SignInButton.SIZE_WIDE)
+                    setOnClickListener{
+                        val signInIntent = googleSignInClient.signInIntent
+                        launcher.launch(signInIntent)
+                    }
+                }
+
+            })
 
     }
 
