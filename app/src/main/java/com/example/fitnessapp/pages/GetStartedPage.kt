@@ -34,6 +34,7 @@ import androidx.media3.ui.PlayerView
 import androidx.navigation.NavController
 import com.example.fitnessapp.AuthState
 import com.example.fitnessapp.AuthViewModel
+import com.example.fitnessapp.Routes
 import com.example.fitnessapp.ui.theme.AppFonts
 
 
@@ -54,8 +55,8 @@ fun GetStartedPage(modifier: Modifier = Modifier, navController: NavController, 
     LaunchedEffect(authState.value) {
         when (authState.value) {
             is AuthState.Authenticated -> {
-                navController.navigate("home") {
-                    popUpTo("getStarted") { inclusive = true }
+                navController.navigate(Routes.home) {
+                    popUpTo(Routes.getStarted) { inclusive = true }
                 }
             }
             else -> {}
@@ -97,8 +98,8 @@ fun GetStartedPage(modifier: Modifier = Modifier, navController: NavController, 
                 .height(300.dp)
         )
         Button(
-            onClick = { navController.navigate("login") {
-                popUpTo("getStarted") {inclusive = true}
+            onClick = { navController.navigate(Routes.login) {
+                popUpTo(Routes.getStarted) {inclusive = true}
             } },
             modifier = Modifier.fillMaxWidth().clip(RoundedCornerShape(100.dp)),
             colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFF6C7894))

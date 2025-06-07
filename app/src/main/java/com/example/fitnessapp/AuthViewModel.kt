@@ -4,6 +4,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 
 class AuthViewModel : ViewModel() {
     private val auth : FirebaseAuth = FirebaseAuth.getInstance()
@@ -52,7 +54,7 @@ class AuthViewModel : ViewModel() {
             }
     }
     fun signout() {
-        auth.signOut()
+        Firebase.auth.signOut()
         _authState.value = AuthState.Unauthenticated
     }
 }

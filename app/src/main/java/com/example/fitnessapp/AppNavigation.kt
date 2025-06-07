@@ -9,23 +9,27 @@ import com.example.fitnessapp.pages.LoginPage
 import com.example.fitnessapp.pages.SignupPage
 import androidx.navigation.compose.rememberNavController
 import com.example.fitnessapp.pages.GetStartedPage
+import com.example.fitnessapp.pages.SplashScreen
 
 
 @Composable
 fun AppNavigation(modifier: Modifier = Modifier, authViewModel: AuthViewModel) {
     val navController = rememberNavController()
-    NavHost(navController = navController, startDestination = "getStarted", builder = {
-        composable("login") {
+    NavHost(navController = navController, startDestination = Routes.splash, builder = {
+        composable(Routes.login) {
             LoginPage(modifier,navController,authViewModel)
         }
-        composable("signup") {
+        composable(Routes.signup) {
             SignupPage(modifier,navController,authViewModel)
         }
-        composable("home") {
+        composable(Routes.home) {
             HomePage(modifier,navController,authViewModel)
         }
-        composable("getStarted") {
+        composable(Routes.getStarted) {
             GetStartedPage(modifier,navController,authViewModel)
+        }
+        composable(Routes.splash) {
+            SplashScreen(navController,authViewModel)
         }
     }
     )

@@ -40,7 +40,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import com.example.fitnessapp.AuthState
 import com.example.fitnessapp.AuthViewModel
+import com.example.fitnessapp.Constants
 import com.example.fitnessapp.R
+import com.example.fitnessapp.Routes
 import com.example.fitnessapp.ui.theme.AppFonts
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
@@ -55,7 +57,7 @@ fun SignupPage(modifier: Modifier = Modifier,navController: NavController,authVi
     val context = LocalContext.current
     val googleSignInOptions = remember {
         GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-            .requestIdToken(webClientId)
+            .requestIdToken(Constants.WEB_CLIENT_ID)
             .requestEmail()
             .build()
     }
@@ -73,8 +75,9 @@ fun SignupPage(modifier: Modifier = Modifier,navController: NavController,authVi
                 .addOnCompleteListener { task->
                     if (task.isSuccessful) {
                         Toast.makeText(context,"Google Sign-in Successful",Toast.LENGTH_SHORT).show()
-                        navController.navigate("home") {
-                            popUpTo("login") {inclusive = true}
+                        authViewModel.checkAuthState()
+                        navController.navigate(Routes.home) {
+                            popUpTo(Routes.login) {inclusive = true}
                         }
                     } else{
                         Toast.makeText(context,"Google Sign-in Failed",Toast.LENGTH_SHORT).show()
@@ -86,7 +89,7 @@ fun SignupPage(modifier: Modifier = Modifier,navController: NavController,authVi
     }
     LaunchedEffect(authState.value) {
         when(authState.value) {
-            is AuthState.Authenticated -> navController.navigate("home")
+            is AuthState.Authenticated -> navController.navigate(Routes.home)
             is AuthState.Error -> Toast.makeText(context,
                 (authState.value as AuthState.Error).message, Toast.LENGTH_SHORT).show()
             else -> Unit
@@ -100,7 +103,7 @@ fun SignupPage(modifier: Modifier = Modifier,navController: NavController,authVi
     }
     LaunchedEffect(authState.value) {
         when(authState.value) {
-            is AuthState.Authenticated -> navController.navigate("home")
+            is AuthState.Authenticated -> navController.navigate(Routes.home)
             is AuthState.Error -> Toast.makeText(context,
                 (authState.value as AuthState.Error).message, Toast.LENGTH_SHORT).show()
             else -> Unit
@@ -179,8 +182,8 @@ fun SignupPage(modifier: Modifier = Modifier,navController: NavController,authVi
 
         TextButton(
             onClick = {
-                navController.navigate("login") {
-                    popUpTo("signup") { inclusive = true}
+                navController.navigate(Routes.login) {
+                    popUpTo(Routes.signup) { inclusive = true}
                 }
             }
         ) {

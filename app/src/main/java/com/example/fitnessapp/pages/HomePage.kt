@@ -1,7 +1,9 @@
 package com.example.fitnessapp.pages
 
+import android.app.Activity
 import android.content.Context
 import android.widget.Toast
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -25,24 +27,31 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavController
 import com.example.fitnessapp.AuthState
 import com.example.fitnessapp.AuthViewModel
+import com.example.fitnessapp.Constants
 import com.example.fitnessapp.NavBar_Items
+import com.example.fitnessapp.Routes
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 
 
-val webClientId = "1034815753409-1ohon4ppt1je9sc7rb9epc7hrkak1qq6.apps.googleusercontent.com"
-
-
 @Composable
 fun HomePage(modifier: Modifier = Modifier, navController: NavController, authViewModel: AuthViewModel) {
+
+    val context = LocalContext.current
+    val activity = context as? Activity
     val authState = authViewModel.authState.observeAsState()
+
+    BackHandler {
+        activity?.finish()
+    }
+
     LaunchedEffect(authState.value) {
         when(authState.value) {
             is AuthState.Unauthenticated -> {
-                navController.navigate("login") {
-                    popUpTo("home") { inclusive = true }
+                navController.navigate(Routes.login) {
+                    popUpTo(Routes.home) { inclusive = true }
                     launchSingleTop = true
                 }
             }
@@ -80,7 +89,7 @@ fun ContentScreen(modifier: Modifier = Modifier,authViewModel: AuthViewModel) {
     ) {
         TextButton(
             onClick = {
-                SignOut(context, webClientId) {
+                SignOut(context, Constants.WEB_CLIENT_ID) {
                     Toast.makeText(context,"Logout Successful",Toast.LENGTH_SHORT).show()
                 }
                 authViewModel.signout()
