@@ -1,4 +1,4 @@
-package com.example.fitnessapp.IntroPages
+package com.example.fitnessapp.intro_pages
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -6,10 +6,10 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import androidx.compose.material3.CircularProgressIndicator
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -52,7 +52,13 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 
 @Composable
-fun SignupPage(modifier: Modifier = Modifier,navController: NavController,authViewModel: AuthViewModel) {
+fun LoginPage(modifier: Modifier = Modifier,navController: NavController,authViewModel: AuthViewModel) {
+    var email by remember {
+        mutableStateOf("")
+    }
+    var password by remember {
+        mutableStateOf("")
+    }
     val authState = authViewModel.authState.observeAsState()
     val context = LocalContext.current
     val googleSignInOptions = remember {
@@ -87,20 +93,11 @@ fun SignupPage(modifier: Modifier = Modifier,navController: NavController,authVi
             Toast.makeText(context,"Google Sign-in Failed: ${e.message}",Toast.LENGTH_SHORT).show()
         }
     }
-    LaunchedEffect(authState.value) {
-        when(authState.value) {
-            is AuthState.Authenticated -> navController.navigate(Routes.home)
-            is AuthState.Error -> Toast.makeText(context,
-                (authState.value as AuthState.Error).message, Toast.LENGTH_SHORT).show()
-            else -> Unit
-        }
+
+    if (authState.value is AuthState.Loading) {
+        CircularProgressIndicator()
     }
-    var email by remember {
-        mutableStateOf("")
-    }
-    var password by remember {
-        mutableStateOf("")
-    }
+
     LaunchedEffect(authState.value) {
         when(authState.value) {
             is AuthState.Authenticated -> navController.navigate(Routes.home)
@@ -111,8 +108,7 @@ fun SignupPage(modifier: Modifier = Modifier,navController: NavController,authVi
     }
     if (authState.value is AuthState.Loading) {
         Column(
-            modifier = Modifier
-                .fillMaxSize()
+            modifier = Modifier.fillMaxSize()
                 .background(Color.White),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
@@ -133,12 +129,12 @@ fun SignupPage(modifier: Modifier = Modifier,navController: NavController,authVi
     ) {
         Image(
             modifier = Modifier.size(180.dp),
-            painter = painterResource(R.drawable.signin_image),
+            painter = painterResource(R.drawable.login_img),
             contentDescription = "Image Bg",
             contentScale = ContentScale.Fit
         )
         Text(
-            text = "Sign up with our App",
+            text = "Login with our App",
             fontSize = 32.sp,
             fontWeight = FontWeight.Bold,
             fontFamily = AppFonts.Poppins
@@ -150,7 +146,7 @@ fun SignupPage(modifier: Modifier = Modifier,navController: NavController,authVi
                 email = it
             },
             label = {
-                Text("Enter email Address", fontFamily = AppFonts.Poppins)
+                Text("Email Address",fontFamily = AppFonts.Poppins)
             }
         )
         Spacer(modifier = Modifier.height(20.dp))
@@ -160,19 +156,20 @@ fun SignupPage(modifier: Modifier = Modifier,navController: NavController,authVi
                 password = it
             },
             label = {
-                Text("Create Password", fontFamily = AppFonts.Poppins)
+                Text("Password",fontFamily = AppFonts.Poppins)
             }, visualTransformation = PasswordVisualTransformation()
         )
         Spacer(modifier = Modifier.height(40.dp))
         Button(
             onClick = {
-                authViewModel.signup(email,password)
+                authViewModel.login(email,password)
             },
+
             modifier = Modifier.fillMaxWidth(0.4f),
             colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF6C7894))
         ) {
             Text(
-                text = "Sign In",
+                text = "Login",
                 fontSize = 20.sp,
                 fontFamily = AppFonts.Poppins,
                 color = Color.White
@@ -182,19 +179,18 @@ fun SignupPage(modifier: Modifier = Modifier,navController: NavController,authVi
 
         TextButton(
             onClick = {
-                navController.navigate(Routes.login) {
-                    popUpTo(Routes.signup) { inclusive = true}
+                navController.navigate(Routes.signup) {
+                    popUpTo(Routes.login) {inclusive = true}
                 }
             }
         ) {
-            Text(text = "Already have an account, Login", fontFamily = AppFonts.Poppins)
+            Text(text = "Don't have an account, Signup",fontFamily = AppFonts.Poppins)
         }
         Spacer(modifier = Modifier.height(40.dp))
-        Text(text = "Or", fontSize = 16.sp, fontFamily = AppFonts.Poppins)
+        Text(text = "Or", fontSize = 18.sp, fontFamily = AppFonts.Poppins)
         Spacer(modifier = Modifier.height(12.dp))
 
-
-        AndroidView(modifier = Modifier.fillMaxWidth(0.6f).height(48.dp),
+        AndroidView(modifier = Modifier.fillMaxWidth(.6f).height(48.dp),
             factory = { context->
                 SignInButton(context).apply {
                     setSize(SignInButton.SIZE_WIDE)
@@ -203,9 +199,6 @@ fun SignupPage(modifier: Modifier = Modifier,navController: NavController,authVi
                         launcher.launch(signInIntent)
                     }
                 }
-
             })
-
     }
-
 }
