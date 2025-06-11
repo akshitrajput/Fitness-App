@@ -1,4 +1,4 @@
-package com.example.fitnessapp.pages
+package com.example.fitnessapp.IntroPages
 
 import android.app.Activity
 import android.content.Context

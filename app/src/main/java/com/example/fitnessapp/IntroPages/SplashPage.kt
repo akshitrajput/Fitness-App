@@ -1,4 +1,4 @@
-package com.example.fitnessapp.pages
+package com.example.fitnessapp.IntroPages
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*

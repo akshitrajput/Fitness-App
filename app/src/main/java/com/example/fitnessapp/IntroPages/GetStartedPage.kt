@@ -1,4 +1,4 @@
-package com.example.fitnessapp.pages
+package com.example.fitnessapp.IntroPages
 
 import android.net.Uri
 import android.view.ViewGroup
