@@ -24,11 +24,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.navigation.NavController
 import com.example.fitnessapp.AuthState
 import com.example.fitnessapp.AuthViewModel
 import com.example.fitnessapp.Constants
 import com.example.fitnessapp.NavBar_Items
+import com.example.fitnessapp.R
 import com.example.fitnessapp.Routes
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
@@ -59,9 +61,9 @@ fun HomePage(modifier: Modifier = Modifier, navController: NavController, authVi
         }
     }
     val navItemsList = listOf(
-        NavBar_Items("Home", Icons.Default.Home),
-        NavBar_Items("WorkOut", Icons.Default.Home),
-        NavBar_Items("Meal", Icons.Default.Home),
+        NavBar_Items("Home", painterResource(id = R.drawable.login_img)),
+        NavBar_Items("WorkOut", painterResource(id = R.drawable.login_img)),
+        NavBar_Items("Meal", painterResource(id = R.drawable.login_img)),
     )
 
     Scaffold (
@@ -69,7 +71,7 @@ fun HomePage(modifier: Modifier = Modifier, navController: NavController, authVi
     , bottomBar = {
         NavigationBar {
             navItemsList.forEachIndexed { index, navItem ->
-                NavigationBarItem(selected = true, onClick = {}, icon = { Icon(imageVector = navItem.icon, contentDescription = "Icon") },
+                NavigationBarItem(selected = true, onClick = {}, icon = { Icon(painter = navItem.icon, contentDescription = "Icon") },
                     label = { Text(navItem.label) })
             }
         }
