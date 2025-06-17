@@ -59,6 +59,20 @@ fun LoginPage(modifier: Modifier = Modifier,navController: NavController,authVie
     var password by remember {
         mutableStateOf("")
     }
+    var emailError by remember { mutableStateOf<String?>(null) }
+    var passwordError by remember { mutableStateOf<String?>(null) }
+    fun validateInputs(email: String, password: String): Boolean {
+        emailError = if (email.isBlank()) "Email cannot be empty"
+        else if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) "Invalid email address"
+        else null
+
+        passwordError = if (password.isBlank()) "Password cannot be empty"
+        else if (password.length < 6) "Password must be at least 6 characters"
+        else null
+
+        return emailError == null && passwordError == null
+    }
+
     val authState = authViewModel.authState.observeAsState()
     val context = LocalContext.current
     val googleSignInOptions = remember {
@@ -100,7 +114,20 @@ fun LoginPage(modifier: Modifier = Modifier,navController: NavController,authVie
 
     LaunchedEffect(authState.value) {
         when(authState.value) {
-            is AuthState.Authenticated -> navController.navigate(Routes.home)
+            is AuthState.Authenticated -> {
+                val userId = Firebase.auth.currentUser?.uid ?: return@LaunchedEffect
+                authViewModel.checkIfMetricsExist(userId) { exists ->
+                    if (exists) {
+                        navController.navigate(Routes.home) {
+                            popUpTo(Routes.signup) { inclusive = true }
+                        }
+                    } else {
+                        navController.navigate(Routes.metrics) {
+                            popUpTo(Routes.signup) { inclusive = true }
+                        }
+                    }
+                }
+            }
             is AuthState.Error -> Toast.makeText(context,
                 (authState.value as AuthState.Error).message, Toast.LENGTH_SHORT).show()
             else -> Unit
@@ -133,6 +160,7 @@ fun LoginPage(modifier: Modifier = Modifier,navController: NavController,authVie
             contentDescription = "Image Bg",
             contentScale = ContentScale.Fit
         )
+
         Text(
             text = "Login with our App",
             fontSize = 32.sp,
@@ -140,31 +168,48 @@ fun LoginPage(modifier: Modifier = Modifier,navController: NavController,authVie
             fontFamily = AppFonts.Poppins
         )
         Spacer(modifier = Modifier.height(20.dp))
+
         OutlinedTextField(
             value = email,
             onValueChange = {
                 email = it
+                emailError = null
             },
             label = {
                 Text("Email Address",fontFamily = AppFonts.Poppins)
+            },
+            isError = emailError != null,
+            supportingText = {
+                if(emailError != null) Text(emailError ?: "", color = Color.Red)
             }
         )
+
         Spacer(modifier = Modifier.height(20.dp))
+
         OutlinedTextField(
             value = password,
             onValueChange = {
                 password = it
+                passwordError = null
             },
             label = {
                 Text("Password",fontFamily = AppFonts.Poppins)
-            }, visualTransformation = PasswordVisualTransformation()
+            },
+            isError = passwordError != null,
+            supportingText = {
+                if(passwordError != null) Text(passwordError ?: "",color = Color.Red)
+            }
+            ,visualTransformation = PasswordVisualTransformation()
         )
+
         Spacer(modifier = Modifier.height(40.dp))
+
         Button(
             onClick = {
-                authViewModel.login(email,password)
+                if (validateInputs(email, password)) {
+                    authViewModel.login(email, password)
+                }
             },
-
             modifier = Modifier.fillMaxWidth(0.4f),
             colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF6C7894))
         ) {
@@ -175,6 +220,7 @@ fun LoginPage(modifier: Modifier = Modifier,navController: NavController,authVie
                 color = Color.White
             )
         }
+
         Spacer(modifier = Modifier.height(2.dp))
 
         TextButton(
@@ -187,18 +233,9 @@ fun LoginPage(modifier: Modifier = Modifier,navController: NavController,authVie
             Text(text = "Don't have an account, Signup",fontFamily = AppFonts.Poppins)
         }
         Spacer(modifier = Modifier.height(40.dp))
-        Text(text = "Or", fontSize = 18.sp, fontFamily = AppFonts.Poppins)
+        Text(text = "Or", fontSize = 15.sp, fontFamily = AppFonts.Poppins)
         Spacer(modifier = Modifier.height(12.dp))
 
-        AndroidView(modifier = Modifier.fillMaxWidth(.6f).height(48.dp),
-            factory = { context->
-                SignInButton(context).apply {
-                    setSize(SignInButton.SIZE_WIDE)
-                    setOnClickListener{
-                        val signInIntent = googleSignInClient.signInIntent
-                        launcher.launch(signInIntent)
-                    }
-                }
-            })
+        GoogleSignInButton(googleSignInClient,launcher)
     }
 }

@@ -4,7 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.example.fitnessapp.intro_pages.HomePage
+import com.example.fitnessapp.main_pages.HomePage
 import com.example.fitnessapp.intro_pages.LoginPage
 import com.example.fitnessapp.intro_pages.SignupPage
 import androidx.navigation.compose.rememberNavController

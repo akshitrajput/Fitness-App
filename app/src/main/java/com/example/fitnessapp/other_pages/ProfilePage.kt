@@ -1,6 +1,5 @@
 package com.example.fitnessapp.other_pages
 
-import android.content.Context
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -13,7 +12,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -32,12 +30,8 @@ import com.example.fitnessapp.AuthViewModel
 import com.example.fitnessapp.Constants
 import com.example.fitnessapp.R
 import com.example.fitnessapp.Routes
-import com.example.fitnessapp.main_pages.SignOut
+import com.example.fitnessapp.main_pages.home_pages.SignOut
 import com.example.fitnessapp.ui.theme.AppFonts
-import com.google.android.gms.auth.api.signin.GoogleSignIn
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.ktx.Firebase
 
 @Composable
 fun ProfilePage(modifier: Modifier = Modifier,navController: NavController,authViewModel: AuthViewModel) {

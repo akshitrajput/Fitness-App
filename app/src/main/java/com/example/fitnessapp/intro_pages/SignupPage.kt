@@ -1,5 +1,6 @@
 package com.example.fitnessapp.intro_pages
 
+import android.content.Intent
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.material3.Text
@@ -12,6 +13,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -45,6 +47,7 @@ import com.example.fitnessapp.R
 import com.example.fitnessapp.Routes
 import com.example.fitnessapp.ui.theme.AppFonts
 import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.SignInButton
 import com.google.firebase.auth.GoogleAuthProvider
@@ -53,6 +56,26 @@ import com.google.firebase.ktx.Firebase
 
 @Composable
 fun SignupPage(modifier: Modifier = Modifier,navController: NavController,authViewModel: AuthViewModel) {
+    var email by remember {
+        mutableStateOf("")
+    }
+    var password by remember {
+        mutableStateOf("")
+    }
+    var emailError by remember { mutableStateOf<String?>(null) }
+    var passwordError by remember { mutableStateOf<String?>(null) }
+    fun validateInputs(email: String, password: String): Boolean {
+        emailError = if (email.isBlank()) "Email cannot be empty"
+        else if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) "Invalid email address"
+        else null
+
+        passwordError = if (password.isBlank()) "Password cannot be empty"
+        else if (password.length < 6) "Password must be at least 6 characters"
+        else null
+
+        return emailError == null && passwordError == null
+    }
+
     val authState = authViewModel.authState.observeAsState()
     val context = LocalContext.current
     val googleSignInOptions = remember {
@@ -87,23 +110,23 @@ fun SignupPage(modifier: Modifier = Modifier,navController: NavController,authVi
             Toast.makeText(context,"Google Sign-in Failed: ${e.message}",Toast.LENGTH_SHORT).show()
         }
     }
+
     LaunchedEffect(authState.value) {
         when(authState.value) {
-            is AuthState.Authenticated -> navController.navigate(Routes.home)
-            is AuthState.Error -> Toast.makeText(context,
-                (authState.value as AuthState.Error).message, Toast.LENGTH_SHORT).show()
-            else -> Unit
-        }
-    }
-    var email by remember {
-        mutableStateOf("")
-    }
-    var password by remember {
-        mutableStateOf("")
-    }
-    LaunchedEffect(authState.value) {
-        when(authState.value) {
-            is AuthState.Authenticated -> navController.navigate(Routes.home)
+            is AuthState.Authenticated -> {
+                val userId = Firebase.auth.currentUser?.uid ?: return@LaunchedEffect
+                authViewModel.checkIfMetricsExist(userId) { exists ->
+                    if (exists) {
+                        navController.navigate(Routes.home) {
+                            popUpTo(Routes.signup) { inclusive = true }
+                        }
+                    } else {
+                        navController.navigate(Routes.metrics) {
+                            popUpTo(Routes.signup) { inclusive = true }
+                        }
+                    }
+                }
+            }
             is AuthState.Error -> Toast.makeText(context,
                 (authState.value as AuthState.Error).message, Toast.LENGTH_SHORT).show()
             else -> Unit
@@ -148,9 +171,14 @@ fun SignupPage(modifier: Modifier = Modifier,navController: NavController,authVi
             value = email,
             onValueChange = {
                 email = it
+                emailError = null
             },
             label = {
                 Text("Enter email Address", fontFamily = AppFonts.Poppins)
+            },
+            isError = emailError != null,
+            supportingText = {
+                if(emailError != null) Text(emailError ?: "", color = Color.Red)
             }
         )
         Spacer(modifier = Modifier.height(20.dp))
@@ -158,15 +186,23 @@ fun SignupPage(modifier: Modifier = Modifier,navController: NavController,authVi
             value = password,
             onValueChange = {
                 password = it
+                passwordError = null
             },
             label = {
                 Text("Create Password", fontFamily = AppFonts.Poppins)
-            }, visualTransformation = PasswordVisualTransformation()
+            },
+            isError = passwordError != null,
+            supportingText = {
+                if(passwordError != null) Text(passwordError ?: "",color = Color.Red)
+            },
+            visualTransformation = PasswordVisualTransformation()
         )
         Spacer(modifier = Modifier.height(40.dp))
         Button(
             onClick = {
-                authViewModel.signup(email,password)
+                if (validateInputs(email, password)) {
+                    authViewModel.signup(email, password)
+                }
             },
             modifier = Modifier.fillMaxWidth(0.4f),
             colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF6C7894))
@@ -190,22 +226,24 @@ fun SignupPage(modifier: Modifier = Modifier,navController: NavController,authVi
             Text(text = "Already have an account, Login", fontFamily = AppFonts.Poppins)
         }
         Spacer(modifier = Modifier.height(40.dp))
-        Text(text = "Or", fontSize = 16.sp, fontFamily = AppFonts.Poppins)
+        Text(text = "Or", fontSize = 15.sp, fontFamily = AppFonts.Poppins)
         Spacer(modifier = Modifier.height(12.dp))
 
-
-        AndroidView(modifier = Modifier.fillMaxWidth(0.6f).height(48.dp),
-            factory = { context->
-                SignInButton(context).apply {
-                    setSize(SignInButton.SIZE_WIDE)
-                    setOnClickListener{
-                        val signInIntent = googleSignInClient.signInIntent
-                        launcher.launch(signInIntent)
-                    }
-                }
-
-            })
-
+        GoogleSignInButton(googleSignInClient,launcher)
     }
+}
 
+@Composable
+fun GoogleSignInButton(googleSignInClient: GoogleSignInClient,launcher: ActivityResultLauncher<Intent>) {
+    AndroidView(modifier = Modifier.fillMaxWidth(0.6f).height(48.dp),
+        factory = { context->
+            SignInButton(context).apply {
+                setSize(SignInButton.SIZE_WIDE)
+                setOnClickListener{
+                    val signInIntent = googleSignInClient.signInIntent
+                    launcher.launch(signInIntent)
+                }
+            }
+
+        })
 }

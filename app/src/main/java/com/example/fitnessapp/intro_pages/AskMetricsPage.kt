@@ -17,10 +17,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
-
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Face
-import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Icon
 
 import androidx.compose.material3.Text
@@ -100,7 +96,7 @@ fun AskMetricsPage(navController: NavController) {
                 onValueChange = { name = it },
                 placeholder = "Your First Name",
                 leadingIcon = {
-                    Icon(painter = painterResource(R.drawable.account), contentDescription = null, tint = Color.Gray)
+                    Icon(painter = painterResource(R.drawable.account), contentDescription = null, tint = Color.Gray, modifier = Modifier.height(20.dp))
                 },
             )
             Spacer(Modifier.height(15.dp))
@@ -109,7 +105,7 @@ fun AskMetricsPage(navController: NavController) {
                 onValueChange = { age = it },
                 placeholder = "Your Age in years",
                 leadingIcon = {
-                    Icon(painter = painterResource(R.drawable.calendar_icon), contentDescription = null, tint = Color.Gray)
+                    Icon(painter = painterResource(R.drawable.calendar_icon), contentDescription = null, tint = Color.Gray, modifier = Modifier.height(20.dp))
                 }
             )
             Spacer(Modifier.height(15.dp))

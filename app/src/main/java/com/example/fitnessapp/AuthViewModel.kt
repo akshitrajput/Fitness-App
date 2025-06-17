@@ -1,13 +1,11 @@
 package com.example.fitnessapp
 
-import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.google.android.gms.auth.api.signin.GoogleSignIn
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
+import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 
 class AuthViewModel : ViewModel() {
@@ -17,6 +15,7 @@ class AuthViewModel : ViewModel() {
     init {
         checkAuthState()
     }
+
     fun checkAuthState() {
         if(auth.currentUser == null) {
             _authState.value = AuthState.Unauthenticated
@@ -25,6 +24,7 @@ class AuthViewModel : ViewModel() {
             _authState.value = AuthState.Authenticated
         }
     }
+
     fun login(email : String, password : String) {
         if(email.isEmpty() || password.isEmpty()) {
             _authState.value = AuthState.Error("Email or Password can't be empty")
@@ -56,10 +56,27 @@ class AuthViewModel : ViewModel() {
                 }
             }
     }
+
+    fun checkIfMetricsExist(userId: String, onResult: (Boolean) -> Unit) {
+        val db = Firebase.firestore
+        db.collection("Users").document(userId).get()
+            .addOnSuccessListener { doc ->
+                if (doc.exists() && doc.get("Weight") != null) {
+                    onResult(true)
+                } else {
+                    onResult(false)
+                }
+            }
+            .addOnFailureListener {
+                onResult(false)
+            }
+    }
+
     fun signout() {
         Firebase.auth.signOut()
         _authState.value = AuthState.Unauthenticated
     }
+
 }
 
 sealed class AuthState {

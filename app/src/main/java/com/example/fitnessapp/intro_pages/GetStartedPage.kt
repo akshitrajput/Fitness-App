@@ -5,6 +5,7 @@ import android.view.ViewGroup
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -77,7 +78,7 @@ fun GetStartedPage(modifier: Modifier = Modifier, navController: NavController, 
     ) {
         Text(
             text = "Fitness App",
-            fontSize = 50.sp,
+            fontSize = 45.sp,
             fontFamily = AppFonts.Poppins,
             fontWeight = FontWeight.Bold,
             modifier = Modifier.padding(top = 24.dp)
@@ -97,14 +98,20 @@ fun GetStartedPage(modifier: Modifier = Modifier, navController: NavController, 
                 .fillMaxWidth()
                 .height(300.dp)
         )
-        Button(
-            onClick = { navController.navigate(Routes.login) {
-                popUpTo(Routes.getStarted) {inclusive = true}
-            } },
-            modifier = Modifier.fillMaxWidth().clip(RoundedCornerShape(100.dp)),
-            colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFF6C7894))
-        ) {
-            Text(text = "Get Started ➝", fontSize = 28.sp, fontFamily = AppFonts.Poppins, color = Color.White)
+        Column (
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ){
+            Button(
+                onClick = { navController.navigate(Routes.login) {
+                    popUpTo(Routes.getStarted) {inclusive = true}
+                } },
+                modifier = Modifier.fillMaxWidth().clip(RoundedCornerShape(100.dp)),
+                colors = ButtonDefaults.buttonColors(backgroundColor = Color(0xFF6C7894))
+            ) {
+                Text(text = "Get Started ➝", fontSize = 24.sp, fontFamily = AppFonts.Poppins, color = Color.White)
+            }
+            Spacer(Modifier.height(20.dp))
         }
     }
 }
