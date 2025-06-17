@@ -1,8 +1,8 @@
 package com.example.fitnessapp
 
-import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.graphics.painter.Painter
 
 data class NavBar_Items(
     val label : String,
-    val icon : ImageVector
+    val icon : Painter
 )

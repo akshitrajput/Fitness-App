@@ -6,4 +6,7 @@ object Routes {
     var home = "home"
     var getStarted = "getStarted"
     var splash = "splash"
+    var profile = "profile"
+    var settings = "settings"
+    var metrics = "metrics"
 }
