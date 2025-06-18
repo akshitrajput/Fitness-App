@@ -6,6 +6,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
@@ -24,21 +25,36 @@ import androidx.navigation.NavController
 import com.example.fitnessapp.view_models.AuthViewModel
 import com.example.fitnessapp.R
 import com.example.fitnessapp.Routes
+import com.example.fitnessapp.main_pages.meal_pages.MealViewModel
 import com.example.fitnessapp.ui.theme.AppFonts
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
+import com.example.fitnessapp.main_pages.home_pages.step_counter.StepCounterBox
+import com.example.fitnessapp.main_pages.home_pages.step_counter.StepViewModel
+
 
 @Composable
 fun HomeScreenContent(
     modifier: Modifier = Modifier,
     authViewModel: AuthViewModel,
-    navController: NavController
+    navController: NavController,
+    mealViewModel: MealViewModel
 ) {
     val context = LocalContext.current
     val workoutViewModel: WorkoutViewModel = viewModel()
+
     val caloriesBurned by workoutViewModel.totalCaloriesBurned.collectAsState()
+    val caloriesIntake by mealViewModel.totalCalories.collectAsState()
+    val totalProtein by mealViewModel.totalProtein.collectAsState()
+    val totalFat by mealViewModel.totalFat.collectAsState()
+    val totalCarbs by mealViewModel.totalCarbs.collectAsState()
+
+    val stepViewModel: StepViewModel = viewModel()
+    val stepsToday by stepViewModel.stepsToday.collectAsState()
+
+
 
     Column(
         modifier = Modifier
@@ -74,16 +90,37 @@ fun HomeScreenContent(
             }
         }
         Spacer(Modifier.height(50.dp))
-        Text(text = "Welcome to Home Page", color = Color.Black)
-        Spacer(Modifier.height(20.dp))
 
-        Text(
-            text = "Total Calories Burned: ${caloriesBurned.toInt()} kcal",
-            style = MaterialTheme.typography.titleLarge,
-            color = Color(0xFF3A7D44)
-        )
+//        Text(text = "Total Calories Burned: ${caloriesBurned.toInt()} kcal", style = MaterialTheme.typography.titleLarge)
+//        Text(text = "Total Calorie Intake: ${caloriesIntake.toInt()} kcal", style = MaterialTheme.typography.titleLarge)
+
+//        Text(text = "Protein Intake: ${totalProtein.toInt()} g", style = MaterialTheme.typography.bodyLarge)
+//        Text(text = "Fat Intake: ${totalFat.toInt()} g", style = MaterialTheme.typography.bodyLarge)
+//        Text(text = "Carbs Intake: ${totalCarbs.toInt()} g", style = MaterialTheme.typography.bodyLarge)
+
+        StepCounterBox(currentSteps = stepsToday)
+        Spacer(modifier = Modifier.height(20.dp))
+
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceEvenly
+        ) {
+            CalorieProgressBox(caloriesBurned = caloriesBurned.toInt())
+            CalorieIntakeProgressBox(caloriesIntake = caloriesIntake.toInt())
+        }
+
+        Column (
+            modifier = Modifier.fillMaxWidth().padding(25.dp).clip(
+                RoundedCornerShape(12.dp)).background(Color.Yellow).padding(15.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center){
+            MacroNutrientBar(label = "Protein", amount = totalProtein.toInt(), goal = 150, color = Color(0xFF81C784)) // Green
+            MacroNutrientBar(label = "Fat", amount = totalFat.toInt(), goal = 70, color = Color(0xFFFFB74D)) // Orange
+            MacroNutrientBar(label = "Carbs", amount = totalCarbs.toInt(), goal = 250, color = Color(0xFF64B5F6)) // Blue
+        }
     }
 }
+
 
 fun SignOut(context: Context, webClientId: String, onComplete: () -> Unit) {
     Firebase.auth.signOut()

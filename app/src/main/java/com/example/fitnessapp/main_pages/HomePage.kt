@@ -37,6 +37,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.fitnessapp.view_models.AuthState
 import com.example.fitnessapp.view_models.AuthViewModel
@@ -45,6 +46,8 @@ import com.example.fitnessapp.NavBar_Items
 import com.example.fitnessapp.R
 import com.example.fitnessapp.Routes
 import com.example.fitnessapp.main_pages.meal_pages.MealPage
+import com.example.fitnessapp.main_pages.meal_pages.MealViewModel
+import com.example.fitnessapp.main_pages.meal_pages.MealViewModelFactory
 import com.example.fitnessapp.main_pages.workout_pages.WorkoutPage
 import com.example.fitnessapp.ui.theme.AppFonts
 
@@ -54,6 +57,7 @@ fun HomePage(modifier: Modifier = Modifier, navController: NavController, authVi
     val context = LocalContext.current
     val activity = context as? Activity
     val authState = authViewModel.authState.observeAsState()
+
     BackHandler {
         activity?.finish()
     }
@@ -109,14 +113,17 @@ fun HomePage(modifier: Modifier = Modifier, navController: NavController, authVi
     }
 }
 
+
+
 @Composable
 fun ContentScreen(modifier: Modifier = Modifier, authViewModel: AuthViewModel, selectedIndex: Int, navController: NavController) {
     val context = LocalContext.current
     val authState = authViewModel.authState.observeAsState()
+    val mealViewModel: MealViewModel = viewModel(factory = MealViewModelFactory(context))
     when (selectedIndex) {
-        0 -> HomeScreenContent(modifier, authViewModel, navController)
+        0 -> HomeScreenContent(modifier, authViewModel, navController,mealViewModel)
         1 -> WorkoutPage(navController)
-        2 -> MealPage()
+        2 -> MealPage(mealViewModel)
     }
 }
 
