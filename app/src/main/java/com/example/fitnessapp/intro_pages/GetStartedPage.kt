@@ -33,8 +33,8 @@ import androidx.media3.common.MediaItem
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.ui.PlayerView
 import androidx.navigation.NavController
-import com.example.fitnessapp.AuthState
-import com.example.fitnessapp.AuthViewModel
+import com.example.fitnessapp.view_models.AuthState
+import com.example.fitnessapp.view_models.AuthViewModel
 import com.example.fitnessapp.Routes
 import com.example.fitnessapp.ui.theme.AppFonts
 

@@ -40,8 +40,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
-import com.example.fitnessapp.AuthState
-import com.example.fitnessapp.AuthViewModel
+import com.example.fitnessapp.view_models.AuthState
+import com.example.fitnessapp.view_models.AuthViewModel
 import com.example.fitnessapp.Constants
 import com.example.fitnessapp.R
 import com.example.fitnessapp.Routes

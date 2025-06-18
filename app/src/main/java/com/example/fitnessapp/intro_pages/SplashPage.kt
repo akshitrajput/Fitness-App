@@ -12,8 +12,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.example.fitnessapp.AuthState
-import com.example.fitnessapp.AuthViewModel
+import com.example.fitnessapp.view_models.AuthState
+import com.example.fitnessapp.view_models.AuthViewModel
 import com.example.fitnessapp.Routes
 import com.example.fitnessapp.ui.theme.AppFonts
 import kotlinx.coroutines.delay

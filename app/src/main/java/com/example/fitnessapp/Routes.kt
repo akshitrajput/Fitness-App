@@ -9,4 +9,8 @@ object Routes {
     var profile = "profile"
     var settings = "settings"
     var metrics = "metrics"
+    var routines = "routines"
+    val workout = "workout"
+    var exploreExercises = "explore_exercises"
+    var exerciseDetail = "exercise_detail"
 }

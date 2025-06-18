@@ -3,6 +3,7 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.google.gms.google.services)
+    kotlin("kapt")
 }
 
 android {
@@ -71,4 +72,15 @@ dependencies {
     implementation ("com.google.firebase:firebase-auth-ktx:22.3.1")
     implementation ("com.google.android.gms:play-services-auth:20.7.0")
     implementation("com.google.firebase:firebase-firestore-ktx")
+
+    implementation("androidx.room:room-runtime:2.5.2")
+    kapt("androidx.room:room-compiler:2.5.2")
+    implementation("androidx.room:room-ktx:2.5.2")
+
+
+    implementation("androidx.datastore:datastore-preferences:1.0.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.4.0")
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.1")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.1")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.1")
 }

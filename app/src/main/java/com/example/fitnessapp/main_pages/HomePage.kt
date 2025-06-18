@@ -38,8 +38,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.example.fitnessapp.AuthState
-import com.example.fitnessapp.AuthViewModel
+import com.example.fitnessapp.view_models.AuthState
+import com.example.fitnessapp.view_models.AuthViewModel
 import com.example.fitnessapp.main_pages.home_pages.HomeScreenContent
 import com.example.fitnessapp.NavBar_Items
 import com.example.fitnessapp.R
@@ -110,12 +110,12 @@ fun HomePage(modifier: Modifier = Modifier, navController: NavController, authVi
 }
 
 @Composable
-fun ContentScreen(modifier: Modifier = Modifier,authViewModel: AuthViewModel,selectedIndex: Int,navController: NavController) {
+fun ContentScreen(modifier: Modifier = Modifier, authViewModel: AuthViewModel, selectedIndex: Int, navController: NavController) {
     val context = LocalContext.current
     val authState = authViewModel.authState.observeAsState()
     when (selectedIndex) {
         0 -> HomeScreenContent(modifier, authViewModel, navController)
-        1 -> WorkoutPage()
+        1 -> WorkoutPage(navController)
         2 -> MealPage()
     }
 }
