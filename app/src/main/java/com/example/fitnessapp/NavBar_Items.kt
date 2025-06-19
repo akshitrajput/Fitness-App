@@ -1,4 +1,4 @@
-package com.example.fitnessapp.main_pages
+package com.example.fitnessapp
 
 import androidx.compose.ui.graphics.painter.Painter
 

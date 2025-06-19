@@ -23,7 +23,7 @@ import androidx.navigation.NavController
 import com.example.fitnessapp.view_models.AuthViewModel
 import com.example.fitnessapp.R
 import com.example.fitnessapp.Routes
-import com.example.fitnessapp.view_models.MealViewModel
+import com.example.fitnessapp.main_pages.meal_pages.MealViewModel
 import com.example.fitnessapp.ui.theme.AppFonts
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions

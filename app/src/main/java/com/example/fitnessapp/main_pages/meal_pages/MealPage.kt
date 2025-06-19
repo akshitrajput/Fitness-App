@@ -18,8 +18,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.fitnessapp.ui.theme.AppFonts
-import com.example.fitnessapp.view_models.MealViewModel
-import com.example.fitnessapp.view_models.MealViewModelFactory
 
 @OptIn(ExperimentalAnimationApi::class, ExperimentalMaterial3Api::class)
 @Composable

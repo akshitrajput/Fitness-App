@@ -1,10 +1,8 @@
-package com.example.fitnessapp.view_models
+package com.example.fitnessapp.main_pages.meal_pages
 
 
 import android.content.Context
 import androidx.lifecycle.*
-import com.example.fitnessapp.main_pages.meal_pages.CalorieDataStore
-import com.example.fitnessapp.main_pages.meal_pages.MealRepository
 
 class MealViewModelFactory(private val context: Context) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {

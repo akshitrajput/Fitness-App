@@ -1,9 +1,6 @@
-package com.example.fitnessapp.view_models
+package com.example.fitnessapp.main_pages.meal_pages
 
 import androidx.lifecycle.*
-import com.example.fitnessapp.main_pages.meal_pages.DrinkItem
-import com.example.fitnessapp.main_pages.meal_pages.FoodItem
-import com.example.fitnessapp.main_pages.meal_pages.MealRepository
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
