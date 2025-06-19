@@ -14,11 +14,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.Icon
-
 import androidx.compose.material3.Text
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
@@ -38,7 +36,6 @@ import com.example.fitnessapp.ui.theme.AppFonts
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
-
 
 @Composable
 fun AskMetricsPage(navController: NavController) {

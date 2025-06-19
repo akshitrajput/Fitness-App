@@ -42,12 +42,11 @@ import androidx.navigation.NavController
 import com.example.fitnessapp.view_models.AuthState
 import com.example.fitnessapp.view_models.AuthViewModel
 import com.example.fitnessapp.main_pages.home_pages.HomeScreenContent
-import com.example.fitnessapp.NavBar_Items
 import com.example.fitnessapp.R
 import com.example.fitnessapp.Routes
 import com.example.fitnessapp.main_pages.meal_pages.MealPage
-import com.example.fitnessapp.main_pages.meal_pages.MealViewModel
-import com.example.fitnessapp.main_pages.meal_pages.MealViewModelFactory
+import com.example.fitnessapp.view_models.MealViewModel
+import com.example.fitnessapp.view_models.MealViewModelFactory
 import com.example.fitnessapp.main_pages.workout_pages.WorkoutPage
 import com.example.fitnessapp.ui.theme.AppFonts
 
@@ -163,11 +162,3 @@ fun BounceIcon(painter: Painter, selected: Boolean) {
         )
     }
 }
-
-
-
-
-
-
-
-

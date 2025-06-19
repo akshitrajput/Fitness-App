@@ -7,7 +7,6 @@ object Routes {
     var getStarted = "getStarted"
     var splash = "splash"
     var profile = "profile"
-    var settings = "settings"
     var metrics = "metrics"
     var routines = "routines"
     val workout = "workout"

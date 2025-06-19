@@ -5,15 +5,19 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.navigation.NavBackStackEntry
 import androidx.media3.common.MediaItem
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.ui.PlayerView
+import com.example.fitnessapp.ui.theme.AppFonts
 import java.io.File
 
 @Composable
@@ -59,22 +63,25 @@ fun ExerciseDetailPage(backStackEntry: NavBackStackEntry) {
     Column(
         modifier = Modifier
             .fillMaxSize().background(Color.White)
-            .padding(16.dp)
+            .padding(16.dp),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
         AndroidView(factory = {
             PlayerView(it).apply {
-                useController = false  // Hides UI controls
+                useController = false
                 this.player = player
             }
         }, modifier = Modifier
             .fillMaxWidth()
             .height(250.dp))
 
+
         Spacer(modifier = Modifier.height(16.dp))
-        Text(exercise.name, style = MaterialTheme.typography.headlineSmall)
+        Text(exercise.name, fontFamily = AppFonts.Poppins, fontWeight = FontWeight.Bold, fontSize = 24.sp)
+        Spacer(modifier = Modifier.height(20.dp))
+        Text(exercise.description, fontFamily = AppFonts.Poppins, fontWeight = FontWeight.SemiBold, fontSize = 20.sp)
         Spacer(modifier = Modifier.height(8.dp))
-        Text(exercise.description, style = MaterialTheme.typography.bodyMedium)
-        Spacer(modifier = Modifier.height(8.dp))
-        Text("Calories per rep: ${exercise.caloriesPerRep}", style = MaterialTheme.typography.bodySmall)
+        Text("Calories per rep: ${exercise.caloriesPerRep}", fontFamily = AppFonts.Poppins, fontWeight = FontWeight.Normal, fontSize = 18.sp)
     }
 }

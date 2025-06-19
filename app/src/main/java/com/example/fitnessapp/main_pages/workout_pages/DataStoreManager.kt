@@ -22,7 +22,7 @@ class DataStoreManager(private val context: Context) {
 
         val lastSavedDate = prefs[DATE_KEY]
         if (lastSavedDate != today) {
-            saveCalories(0f) // reset for new day
+            saveCalories(0f)
             return 0f
         }
 

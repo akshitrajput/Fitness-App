@@ -3,8 +3,7 @@ package com.example.fitnessapp.main_pages.meal_pages
 import android.content.Context
 import androidx.datastore.preferences.core.*
 import androidx.datastore.preferences.preferencesDataStore
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.*
 
 private val Context.dataStore by preferencesDataStore(name = "calorie_data")
 
@@ -29,24 +28,15 @@ class CalorieDataStore(private val context: Context) {
     }
 
     suspend fun updateCalories(calories: Float) {
-        context.dataStore.edit { prefs ->
-            prefs[totalCaloriesKey] = calories
-        }
+        context.dataStore.edit { it[totalCaloriesKey] = calories }
     }
-
-    suspend fun resetCalories() {
-        context.dataStore.edit { prefs ->
-            prefs[totalCaloriesKey] = 0f
-        }
-    }
-
 
     suspend fun resetAll() {
-        context.dataStore.edit { prefs ->
-            prefs[totalCaloriesKey] = 0f
-            prefs[totalProteinKey] = 0f
-            prefs[totalFatKey] = 0f
-            prefs[totalCarbsKey] = 0f
+        context.dataStore.edit {
+            it[totalCaloriesKey] = 0f
+            it[totalProteinKey] = 0f
+            it[totalFatKey] = 0f
+            it[totalCarbsKey] = 0f
         }
     }
 }

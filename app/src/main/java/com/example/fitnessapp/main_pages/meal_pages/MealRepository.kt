@@ -1,21 +1,22 @@
 package com.example.fitnessapp.main_pages.meal_pages
 
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.*
 
+class MealRepository(private val dataStore: CalorieDataStore) {
 
-class MealRepository(private val calorieDataStore: CalorieDataStore) {
+    val totalCalories: Flow<Float> = dataStore.totalCalories
+    val totalProtein: Flow<Float> = dataStore.totalProtein
+    val totalFat: Flow<Float> = dataStore.totalFat
+    val totalCarbs: Flow<Float> = dataStore.totalCarbs
 
-    val totalCalories: Flow<Float> = calorieDataStore.totalCalories
-
-    // New function
-    suspend fun addCalories(amount: Float) {
-        val current = calorieDataStore.totalCalories.first()
-        calorieDataStore.updateCalories(current + amount)
+    suspend fun addCalories(cal: Float, protein: Float, fat: Float, carbs: Float) {
+        // capture current
+        val current = totalCalories.first()
+        val p = totalProtein.first()
+        val f = totalFat.first()
+        val c = totalCarbs.first()
+        dataStore.updateAll(current + cal, p + protein, f + fat, c + carbs)
     }
 
-    // Rename for clarity or add this alias
-    suspend fun resetCalories() {
-        calorieDataStore.resetCalories()
-    }
+    suspend fun resetAll() = dataStore.resetAll()
 }

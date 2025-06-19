@@ -6,8 +6,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -20,12 +18,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.fitnessapp.main_pages.workout_pages.WorkoutViewModel
+import com.example.fitnessapp.view_models.WorkoutViewModel
 import androidx.navigation.NavController
 import com.example.fitnessapp.view_models.AuthViewModel
 import com.example.fitnessapp.R
 import com.example.fitnessapp.Routes
-import com.example.fitnessapp.main_pages.meal_pages.MealViewModel
+import com.example.fitnessapp.view_models.MealViewModel
 import com.example.fitnessapp.ui.theme.AppFonts
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
@@ -64,19 +62,28 @@ fun HomeScreenContent(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Top
     ) {
-        Spacer(Modifier.height(30.dp))
+        Spacer(Modifier.height(25.dp))
         Row(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(10.dp),
             horizontalArrangement = Arrangement.SpaceAround,
         ) {
-            Text(
-                "Keep the Hunger,\nStay fit!",
-                fontFamily = AppFonts.Poppins,
-                fontSize = 28.sp,
-                fontWeight = FontWeight.Bold,
-            )
+            Column {
+                Text(
+                    "Keep the Hunger.",
+                    fontFamily = AppFonts.Poppins,
+                    fontSize = 28.sp,
+                    fontWeight = FontWeight.Bold,
+                )
+                Text(
+                    "Be Fit",
+                    color = Color.Red,
+                    fontFamily = AppFonts.Poppins,
+                    fontSize = 28.sp,
+                    fontWeight = FontWeight.Bold,
+                )
+            }
             Box(modifier = Modifier.padding(top = 5.dp)) {
                 Image(
                     painter = painterResource(R.drawable.account),
@@ -89,17 +96,10 @@ fun HomeScreenContent(
                 )
             }
         }
-        Spacer(Modifier.height(50.dp))
-
-//        Text(text = "Total Calories Burned: ${caloriesBurned.toInt()} kcal", style = MaterialTheme.typography.titleLarge)
-//        Text(text = "Total Calorie Intake: ${caloriesIntake.toInt()} kcal", style = MaterialTheme.typography.titleLarge)
-
-//        Text(text = "Protein Intake: ${totalProtein.toInt()} g", style = MaterialTheme.typography.bodyLarge)
-//        Text(text = "Fat Intake: ${totalFat.toInt()} g", style = MaterialTheme.typography.bodyLarge)
-//        Text(text = "Carbs Intake: ${totalCarbs.toInt()} g", style = MaterialTheme.typography.bodyLarge)
+        Spacer(Modifier.height(25.dp))
 
         StepCounterBox(currentSteps = stepsToday)
-        Spacer(modifier = Modifier.height(20.dp))
+        Spacer(modifier = Modifier.height(15.dp))
 
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -111,7 +111,7 @@ fun HomeScreenContent(
 
         Column (
             modifier = Modifier.fillMaxWidth().padding(25.dp).clip(
-                RoundedCornerShape(12.dp)).background(Color.Yellow).padding(15.dp),
+                RoundedCornerShape(12.dp)).background(Color(0xFFffebee)).padding(15.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center){
             MacroNutrientBar(label = "Protein", amount = totalProtein.toInt(), goal = 150, color = Color(0xFF81C784)) // Green
@@ -120,7 +120,6 @@ fun HomeScreenContent(
         }
     }
 }
-
 
 fun SignOut(context: Context, webClientId: String, onComplete: () -> Unit) {
     Firebase.auth.signOut()

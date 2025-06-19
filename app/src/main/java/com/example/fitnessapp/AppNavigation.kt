@@ -16,7 +16,6 @@ import com.example.fitnessapp.main_pages.workout_pages.ExploreExercisesPage
 import com.example.fitnessapp.main_pages.workout_pages.RoutinePage
 import com.example.fitnessapp.main_pages.workout_pages.WorkoutPage
 import com.example.fitnessapp.other_pages.ProfilePage
-import com.example.fitnessapp.other_pages.SettingsPage
 import com.example.fitnessapp.view_models.AuthViewModel
 import androidx.navigation.NavType
 import androidx.navigation.navArgument
@@ -44,9 +43,6 @@ fun AppNavigation(modifier: Modifier = Modifier, authViewModel: AuthViewModel) {
         }
         composable(Routes.profile) {
             ProfilePage(modifier,navController,authViewModel)
-        }
-        composable(Routes.settings) {
-            SettingsPage(modifier)
         }
         composable(Routes.metrics) {
             AskMetricsPage(navController)

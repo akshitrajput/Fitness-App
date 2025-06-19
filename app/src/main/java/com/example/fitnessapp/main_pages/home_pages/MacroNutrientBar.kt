@@ -26,7 +26,7 @@ fun MacroNutrientBar(
 ) {
     val percentage = min(amount / goal.toFloat(), 1f)
     val animatedWidth by animateDpAsState(
-        targetValue = (percentage * 200).dp, // bar max width = 200dp
+        targetValue = (percentage * 150).dp, // bar max width = 200dp
         animationSpec = tween(durationMillis = 1000),
         label = "Animated Macro Width"
     )

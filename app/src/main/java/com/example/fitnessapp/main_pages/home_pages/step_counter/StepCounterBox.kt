@@ -22,7 +22,7 @@ fun StepCounterBox(currentSteps: Int, goal: Int = 10000) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(16.dp).clip(RoundedCornerShape(12.dp)).background(Color.LightGray).padding(10.dp),
+            .padding(16.dp).clip(RoundedCornerShape(12.dp)).background(Color(0xFFe8f5e9)).padding(10.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text("Daily Steps", fontSize = 20.sp)
@@ -32,7 +32,7 @@ fun StepCounterBox(currentSteps: Int, goal: Int = 10000) {
             strokeWidth = 10.dp,
             modifier = Modifier.size(120.dp),
             color = Color(0xFF3F51B5),
-            trackColor = Color.DarkGray
+            trackColor = Color.LightGray
         )
         Spacer(modifier = Modifier.height(10.dp))
         Text("$currentSteps / $goal", fontSize = 18.sp, color = Color.DarkGray)
