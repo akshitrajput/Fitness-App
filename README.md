@@ -42,13 +42,9 @@
 <h2 align="left">📸 UI Previews</h2>
 
 ###
- ![Image Alt](https://github.com/akshitrajput/MF-Explorer/blob/f2f485d7909ba7349a119ebd0289c633f9006679/app/src/main/res/drawable/readme_image1.png)
+![Image Alt](https://github.com/akshitrajput/Fitness-App/blob/19a0d2bd5a81ec33598ca88d7f2324701cf1143a/Fitness-App_screenshot_1.jpg)
 
-  ![Image Alt](https://github.com/akshitrajput/MF-Explorer/blob/f2f485d7909ba7349a119ebd0289c633f9006679/app/src/main/res/drawable/readme_image2.png)
-
-   ![Image Alt](https://github.com/akshitrajput/MF-Explorer/blob/f2f485d7909ba7349a119ebd0289c633f9006679/app/src/main/res/drawable/readme_image3.png)
-
-
+  ![Image Alt](https://github.com/akshitrajput/Fitness-App/blob/19a0d2bd5a81ec33598ca88d7f2324701cf1143a/Fitness-App_screenshot_2.jpg)
 
 ###
 
